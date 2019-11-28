@@ -11,11 +11,13 @@ export default class HomePage extends React.Component {
         super(props)
         this.state = {
             key: "",
-            address: ""
+            address: "",
+            status: ""
         }
         this.generateWallet = this.generateWallet.bind(this)
         this.getBalance = this.getBalance.bind(this)
         this.getAddress = this.getAddress.bind(this)
+        this.getStatus = this.getStatus.bind(this)
     }
 
     getAddress = () => {
@@ -24,8 +26,8 @@ export default class HomePage extends React.Component {
             this.setState({ address: add })
         })
     }
-    getBalance = address => {
-        arweave.wallets.getBalance(address).then((balance) => {
+    getBalance = () => {
+        arweave.wallets.getBalance(this.state.address).then((balance) => {
             let winston = balance;
             let ar = arweave.ar.winstonToAr(balance)
 
@@ -44,12 +46,15 @@ export default class HomePage extends React.Component {
     getStatus = () => {
         fetch('https://arweave.net/info')
             .then((res) => res.json())
-            .then(function (data) {
+            .then((data) => {
                 console.log(data)
+
+                this.setState({ status: data })
             })
     }
     componentDidMount() {
         this._isMounted = true;
+        this.getStatus() 
     }
     componentWillUnmount() {
         this._isMounted = false;
@@ -60,12 +65,17 @@ export default class HomePage extends React.Component {
             <Container>
                 <h1>Arweave Test</h1>
                 <br />
+                <h3>Network status:</h3>
+                <p>Height: {this.state.status.height}</p>
+                <p>Peers: {this.state.status.peers}</p>
+                <p>Current: {this.state.status.current}</p>
                 <ButtonGroup>
                     <Button onClick={this.generateWallet}>Generate Wallet</Button>
                     <Button onClick={this.getAddress}>Get Address</Button>
                     <Button onClick={this.getBalance}>Get Balance</Button>
                     <Button onClick={this.getStatus}>Get Status</Button>
                 </ButtonGroup>
+                <p>{this.state.key.n}</p>
                 <p>{this.state.address}</p>
             </Container>
         )
