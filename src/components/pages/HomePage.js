@@ -15,13 +15,13 @@ export default class HomePage extends React.Component {
         }
         this.generateWallet = this.generateWallet.bind(this)
         this.getBalance = this.getBalance.bind(this)
-        this.getAddress = this.getBalance.bind(this)
+        this.getAddress = this.getAddress.bind(this)
     }
 
-    getAddress = key => {
-        arweave.wallets.jwkToAddress(key).then((address) => {
-            console.log(address)
-            this.setState({ address: address })
+    getAddress = () => {
+        arweave.wallets.jwkToAddress(this.state.key).then((add) => {
+            console.log(add)
+            this.setState({ address: add })
         })
     }
     getBalance = address => {
@@ -36,10 +36,9 @@ export default class HomePage extends React.Component {
     generateWallet = () => {
         arweave.wallets.generate().then((jwt) => {
             console.log(jwt)
-            if (this._isMounted) {
-                this.setState({ key: jwt })
-            }
-            return jwt;
+
+            this.setState({ key: jwt })
+
         })
     }
     getStatus = () => {
@@ -57,7 +56,6 @@ export default class HomePage extends React.Component {
     }
 
     render() {
-
         return (
             <Container>
                 <h1>Arweave Test</h1>
